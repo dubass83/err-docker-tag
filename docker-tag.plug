@@ -1,0 +1,9 @@
+[Core]
+Name = Docker-tag
+Module = docker-tag
+
+[Python]
+Version = 2+
+
+[Documentation]
+Description = Docker tag plugin
