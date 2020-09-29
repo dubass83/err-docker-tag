@@ -1,6 +1,6 @@
 [Core]
-Name = Docker-tag
-Module = docker-tag
+Name = Docker_tag
+Module = docker_tag
 
 [Python]
 Version = 2+

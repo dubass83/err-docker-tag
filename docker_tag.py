@@ -3,7 +3,7 @@ from itertools import chain
 import re
 import logging
 
-log = logging.getLogger(name='errbot.plugins.Docker-tag')
+log = logging.getLogger(name='errbot.plugins.Docker_tag')
 
 try:
     import docker
@@ -32,7 +32,7 @@ class Docker_tag(BotPlugin):
 
         if not self.config:
             # Don't allow activation until we are configured
-            message = 'Docker-tag is not configured, please do so.'
+            message = 'Docker_tag is not configured, please do so.'
             self.log.info(message)
             self.warn_admins(message)
             return
