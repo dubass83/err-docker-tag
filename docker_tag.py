@@ -89,7 +89,11 @@ class DockerTag(BotPlugin):
         old_tag = args.pop(0)
         regestry = args.pop(0)
         full_regestry = "{}/{}".format(re.findall(r'http[s]*://(.*)', self.config['URL'])[0], regestry)
-
+        self.log.debug("Get params\n new_tag: {}\nold_tag: {}\nregestry: {}".format(
+            new_tag,
+            old_tag,
+            regestry
+        ))
         client = self.registry_connect
 
         try:
