@@ -1,5 +1,5 @@
 [Core]
-Name = Docker_tag
+Name = DockerTag
 Module = docker_tag
 
 [Python]
