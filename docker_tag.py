@@ -85,11 +85,11 @@ class DockerTag(BotPlugin):
         Example:
         !dt_set gc-web/data-container stage-0.1.1 prod-0.0.1
         """
-        new_tag = args.pop(0)
-        old_tag = args.pop(0)
         regestry = args.pop(0)
+        old_tag = args.pop(0)
+        new_tag = args.pop(0)
         full_regestry = "{}/{}".format(re.findall(r'http[s]*://(.*)', self.config['URL'])[0], regestry)
-        self.log.debug("Get params\n new_tag: {}\nold_tag: {}\nregestry: {}".format(
+        self.log.debug("Get params new_tag: {} old_tag: {} regestry: {}".format(
             new_tag,
             old_tag,
             regestry
