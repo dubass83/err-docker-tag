@@ -3,7 +3,7 @@ from itertools import chain
 import re
 import logging
 
-log = logging.getLogger(name='errbot.plugins.Docker_tag')
+log = logging.getLogger(name='errbot.plugins.DockerTag')
 
 try:
     import docker
@@ -25,14 +25,14 @@ CONFIG_TEMPLATE = {
 }
 
 
-class Docker_tag(BotPlugin):
+class DockerTag(BotPlugin):
     """Plugin for Docker tag command"""
 
     def activate(self):
 
         if not self.config:
             # Don't allow activation until we are configured
-            message = 'Docker_tag is not configured, please do so.'
+            message = 'DockerTag is not configured, please do so.'
             self.log.info(message)
             self.warn_admins(message)
             return
@@ -51,7 +51,7 @@ class Docker_tag(BotPlugin):
                                 configuration.items()))
         else:
             config = CONFIG_TEMPLATE
-        super(Docker_tag, self).configure(config)
+        super(DockerTag, self).configure(config)
         return
 
     def _login(self):
@@ -61,6 +61,13 @@ class Docker_tag(BotPlugin):
 
         try:
             client = docker.DockerClient(base_url='unix://var/run/docker.sock')
+        except docker.errors.APIError:
+            message = 'Unable connect to socket unix://var/run/docker.sock'
+            self.log.error(message)
+            return False
+
+        try:
+            self.log.debug('try login USER {} to registry {}'.format(username, reg_url))
             client.login(username=username, password=password, registry=reg_url) 
             self.log.info('logging into {}'.format(reg_url))
             return client
