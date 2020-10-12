@@ -74,7 +74,7 @@ class Docker_tag(BotPlugin):
     def dt_set(self, msg, args):
         """
         Set new tag for docker image.
-        
+
         Example:
         !dt_set gc-web/data-container stage-0.1.1 prod-0.0.1
         """
@@ -92,12 +92,16 @@ class Docker_tag(BotPlugin):
             if not image.tag(full_regestry, tag=new_tag):
                 message = 'Unable to set new tag {} for {}:{}'.format(new_tag, full_regestry, old_tag)
                 self.log.error(message)
-                return False                
+                return False
             # push new tag to registry
             for line in client.images.push(full_regestry, tag=new_tag, stream=True, decode=True):
                 # print(line)
                 self.log.info(line)
-            
+            # push release tag which trigger codepipeline build
+            for line in client.images.push(full_regestry, tag="release", stream=True, decode=True):
+                # print(line)
+                self.log.info(line)
+
             response = 'New tag - {0} pushed on the {1} registry for tag - {2}'.format(
                 new_tag,
                 full_regestry,
