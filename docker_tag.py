@@ -3,7 +3,7 @@ from itertools import chain
 import re
 import logging
 
-log = logging.getLogger(name='errbot.plugins.Docker-tag')
+log = logging.getLogger(name='errbot.plugins.DockerTag')
 
 try:
     import docker
@@ -25,14 +25,14 @@ CONFIG_TEMPLATE = {
 }
 
 
-class Docker_tag(BotPlugin):
+class DockerTag(BotPlugin):
     """Plugin for Docker tag command"""
 
     def activate(self):
 
         if not self.config:
             # Don't allow activation until we are configured
-            message = 'Docker-tag is not configured, please do so.'
+            message = 'DockerTag is not configured, please do so.'
             self.log.info(message)
             self.warn_admins(message)
             return
@@ -51,7 +51,7 @@ class Docker_tag(BotPlugin):
                                 configuration.items()))
         else:
             config = CONFIG_TEMPLATE
-        super(Docker_tag, self).configure(config)
+        super(DockerTag, self).configure(config)
         return
 
     def _login(self):
@@ -61,6 +61,13 @@ class Docker_tag(BotPlugin):
 
         try:
             client = docker.DockerClient(base_url='unix://var/run/docker.sock')
+        except docker.errors.APIError:
+            message = 'Unable connect to socket unix://var/run/docker.sock'
+            self.log.error(message)
+            return False
+
+        try:
+            self.log.debug('try login USER {} to registry {}'.format(username, reg_url))
             client.login(username=username, password=password, registry=reg_url) 
             self.log.info('logging into {}'.format(reg_url))
             return client
@@ -78,11 +85,15 @@ class Docker_tag(BotPlugin):
         Example:
         !dt_set gc-web/data-container stage-0.1.1 prod-0.0.1
         """
-        new_tag = args.pop(0)
-        old_tag = args.pop(0)
         regestry = args.pop(0)
+        old_tag = args.pop(0)
+        new_tag = args.pop(0)
         full_regestry = "{}/{}".format(re.findall(r'http[s]*://(.*)', self.config['URL'])[0], regestry)
-
+        self.log.debug("Get params new_tag: {} old_tag: {} regestry: {}".format(
+            new_tag,
+            old_tag,
+            regestry
+        ))
         client = self.registry_connect
 
         try:
