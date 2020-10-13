@@ -108,7 +108,11 @@ class DockerTag(BotPlugin):
             for line in client.images.push(full_regestry, tag=new_tag, stream=True, decode=True):
                 # print(line)
                 self.log.info(line)
-            # push release tag which trigger codepipeline build
+            # tag and push release tag which trigger codepipeline build
+            if not image.tag(full_regestry, tag="release"):
+                message = 'Unable to set new tag {} for {}:{}'.format("release", full_regestry, old_tag)
+                self.log.error(message)
+                return False
             for line in client.images.push(full_regestry, tag="release", stream=True, decode=True):
                 # print(line)
                 self.log.info(line)
