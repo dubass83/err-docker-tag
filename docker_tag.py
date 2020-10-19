@@ -2,6 +2,7 @@ from errbot import BotPlugin, botcmd
 from itertools import chain
 import re
 import logging
+import time
 
 log = logging.getLogger(name='errbot.plugins.DockerTag')
 
@@ -76,7 +77,6 @@ class DockerTag(BotPlugin):
             self.log.error(message)
             return False
 
-
     @botcmd(split_args_with=' ')
     def dt_set(self, msg, args):
         """
@@ -108,6 +108,10 @@ class DockerTag(BotPlugin):
             for line in client.images.push(full_regestry, tag=new_tag, stream=True, decode=True):
                 # print(line)
                 self.log.info(line)
+
+            # sleep for 5 second
+            time.sleep(5)
+
             # tag and push release tag which trigger codepipeline build
             if not image.tag(full_regestry, tag="release"):
                 message = 'Unable to set new tag {} for {}:{}'.format("release", full_regestry, old_tag)
